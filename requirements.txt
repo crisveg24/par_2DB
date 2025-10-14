@@ -1,28 +1,22 @@
-# Dependencias del Proyecto ETL - Stock Sentiment Analysis
-# Python 3.8+
+# Pipeline ETL - Stock Sentiment Analysis
+# Dependencias mínimas necesarias
 
-# Core data processing
+# Procesamiento de datos
 pandas>=2.0.0
 numpy>=1.24.0
 
-# Data visualization
+# Visualización (para generate_analysis.py)
+plotly>=5.14.0
 matplotlib>=3.7.0
 seaborn>=0.12.0
-plotly>=5.14.0
 
-# Data storage
-pyarrow>=12.0.0  # Para soporte de Parquet
-fastparquet>=2023.4.0  # Alternativa para Parquet
+# Almacenamiento de datos
+fastparquet>=2023.4.0
+pyarrow>=12.0.0
 
-# Jupyter notebooks
-jupyter>=1.0.0
-ipykernel>=6.22.0
-notebook>=6.5.0
-
-# Additional utilities
+# Utilidades
 python-dateutil>=2.8.2
-openpyxl>=3.1.0  # Para leer archivos Excel si es necesario
 
-# Code quality
-black>=23.3.0  # Code formatter (opcional)
-flake8>=6.0.0  # Linter (opcional)
+# Calidad de código (opcional)
+black>=23.3.0
+flake8>=6.0.0
