@@ -22,7 +22,7 @@ class StockExtractor:
         
     def extract_data(self) -> pd.DataFrame:
         """
-        Extrae los datos del archivo CSV
+        Extrae los datos del archivo CSV con detección automática de encoding
         
         Returns:
             DataFrame con los datos extraídos
@@ -30,10 +30,20 @@ class StockExtractor:
         try:
             print(f"📂 Extrayendo datos desde: {self.file_path}")
             
-            # Leer el CSV
-            self.data = pd.read_csv(self.file_path)
+            # Lista de encodings a probar
+            encodings = ['utf-8', 'latin-1', 'iso-8859-1', 'cp1252']
             
-            print(f"✅ Datos extraídos exitosamente")
+            # Intentar leer con diferentes encodings
+            for encoding in encodings:
+                try:
+                    self.data = pd.read_csv(self.file_path, encoding=encoding)
+                    print(f"✅ Datos extraídos exitosamente con encoding: {encoding}")
+                    break
+                except UnicodeDecodeError:
+                    if encoding == encodings[-1]:  # Último intento
+                        raise
+                    continue
+            
             print(f"📊 Dimensiones: {self.data.shape[0]} filas × {self.data.shape[1]} columnas")
             print(f"📋 Columnas: {list(self.data.columns)}")
             
