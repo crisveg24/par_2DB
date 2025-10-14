@@ -1,23 +1,26 @@
 # 📊 Pipeline ETL - Stock Sentiment Analysis
 
-![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
 ![Pandas](https://img.shields.io/badge/Pandas-2.0%2B-green)
-![License](https://img.shields.io/badge/License-MIT-yellow)
+![Plotly](https://img.shields.io/badge/Plotly-5.14%2B-purple)
 ![Status](https://img.shields.io/badge/Status-Completed-success)
+
+---
 
 ## 📋 Descripción del Proyecto
 
-Este proyecto implementa un **pipeline ETL (Extract, Transform, Load)** completo para el análisis de sentimientos en noticias relacionadas con el mercado de valores. El objetivo es extraer, limpiar, transformar y cargar datos de sentimientos de noticias financieras para su posterior análisis exploratorio.
+Este proyecto implementa un **pipeline ETL (Extract, Transform, Load)** completo para el análisis de sentimientos en noticias financieras. El sistema extrae datos de noticias del mercado de valores, los limpia y transforma, y genera visualizaciones interactivas para análisis exploratorio.
 
 ### 🎯 Objetivos Alcanzados
 
-✅ Pipeline ETL completo en Python con arquitectura modular  
-✅ Extracción de datos desde archivo CSV  
-✅ Transformación y limpieza de datos (fechas, duplicados, nulos, tipos)  
-✅ Carga de datos en múltiples formatos (CSV, Parquet, SQLite)  
-✅ **7 visualizaciones originales** de análisis exploratorio  
-✅ Repositorio Git con **2+ ramas** y **5+ commits descriptivos**  
-✅ Documentación completa y clara  
+✅ **Pipeline ETL modular** con arquitectura Extract-Transform-Load  
+✅ **Extracción robusta** con detección automática de encoding  
+✅ **Transformación completa** con 7 operaciones de limpieza  
+✅ **Carga multi-formato** (CSV, Parquet, SQLite)  
+✅ **5 visualizaciones interactivas** en HTML con Plotly  
+✅ **Conclusiones basadas en datos reales** (4,101 registros, 2000-2016)  
+✅ **Git con 10+ commits** y 2 ramas (main, develop)  
+✅ **Documentación completa** y profesional  
 
 ---
 
@@ -26,31 +29,30 @@ Este proyecto implementa un **pipeline ETL (Extract, Transform, Load)** completo
 ```
 par_2DB/
 │
-├── 📁 Extract/                    # Módulo de extracción
+├── 📁 Extract/                      # Módulo de Extracción
 │   ├── __init__.py
-│   └── stock_extractor.py        # Clase para extraer datos del CSV
+│   └── stock_extractor.py          # Extrae y valida datos CSV
 │
-├── 📁 Transform/                  # Módulo de transformación
+├── 📁 Transform/                    # Módulo de Transformación
 │   ├── __init__.py
-│   └── stock_transformer.py      # Clase para limpiar y transformar datos
+│   └── stock_transformer.py        # Limpia y transforma datos
 │
-├── 📁 Load/                       # Módulo de carga
+├── 📁 Load/                         # Módulo de Carga
 │   ├── __init__.py
-│   └── stock_loader.py           # Clase para cargar datos en diferentes formatos
+│   └── stock_loader.py             # Carga en múltiples formatos
 │
-├── 📁 notebooks/                  # Jupyter Notebooks
-│   ├── 01_etl.ipynb              # Pipeline ETL interactivo
-│   └── 02_eda.ipynb              # Análisis Exploratorio de Datos (7 gráficas)
+├── 📁 data/                         # Datos procesados (auto-generados)
+│   ├── stock_senti_clean.csv       # CSV limpio (7.4 MB)
+│   ├── stock_senti_clean.parquet   # Parquet comprimido (5.6 MB)
+│   └── stock_senti_clean.db        # SQLite con índices (10.1 MB)
 │
-├── 📁 data/                       # Datos procesados (generados automáticamente)
-│   ├── stock_senti_clean.csv     # Datos limpios en CSV
-│   ├── stock_senti_clean.parquet # Datos limpios en Parquet (comprimido)
-│   └── stock_senti_clean.db      # Base de datos SQLite
-│
-├── 📄 main.py                     # Script principal del pipeline ETL
-├── 📄 requirements.txt            # Dependencias del proyecto
-├── 📄 stock_senti_analysis.csv   # Dataset original
-└── 📄 README.md                   # Este archivo
+├── 📄 main.py                       # Pipeline ETL completo
+├── 📄 generate_analysis.py         # Genera visualizaciones HTML
+├── 📄 analysis_report.html         # Reporte interactivo (resultado final)
+├── 📄 stock_senti_analysis.csv     # Dataset original (fuente)
+├── 📄 requirements.txt             # Dependencias del proyecto
+├── 📄 .gitignore                   # Archivos ignorados por Git
+└── 📄 README.md                    # Esta documentación
 ```
 
 ---
@@ -59,469 +61,620 @@ par_2DB/
 
 ### Prerrequisitos
 
-- Python 3.8 o superior
-- pip (gestor de paquetes de Python)
-- Git
+- **Python 3.10+** (recomendado)
+- **pip** (gestor de paquetes)
+- **Git** (control de versiones)
 
-### Pasos de Instalación
-
-1. **Clonar el repositorio**
+### Instalación Rápida
 
 ```bash
+# 1. Clonar el repositorio
 git clone <URL_DEL_REPOSITORIO>
 cd par_2DB
-```
 
-2. **Crear un entorno virtual (recomendado)**
-
-```powershell
-# Windows PowerShell
+# 2. Crear entorno virtual (recomendado)
 python -m venv venv
+
+# Windows
 .\venv\Scripts\Activate.ps1
+
+# Linux/Mac
+source venv/bin/activate
+
+# 3. Instalar dependencias
+pip install -r requirements.txt
 ```
 
-3. **Instalar dependencias**
+### Dependencias Principales
 
-```bash
-pip install -r requirements.txt
+```
+pandas>=2.0.0          # Procesamiento de datos
+numpy>=1.24.0          # Operaciones numéricas
+plotly>=5.14.0         # Visualizaciones interactivas
+matplotlib>=3.7.0      # Gráficos estáticos
+seaborn>=0.12.0        # Visualizaciones estadísticas
+fastparquet>=2023.4.0  # Soporte Parquet
+pyarrow>=12.0.0        # Engine Parquet alternativo
 ```
 
 ---
 
 ## 💻 Uso del Proyecto
 
-### Opción 1: Ejecutar el Pipeline ETL Completo
+### Paso 1: Ejecutar Pipeline ETL
 
 ```bash
 python main.py
 ```
 
-Este comando ejecutará todo el pipeline ETL:
-1. ✅ Extrae datos del CSV original
-2. ✅ Transforma y limpia los datos
-3. ✅ Carga los datos en CSV, Parquet y SQLite
-4. ✅ Genera reportes de cada fase
+**Este comando realiza:**
+
+1. **Extract** 📂
+   - Lee `stock_senti_analysis.csv` (dataset original)
+   - Detecta automáticamente el encoding (latin-1)
+   - Valida estructura y calidad de datos
+   - **Salida:** 4,101 registros cargados
+
+2. **Transform** 🔄
+   - Normaliza nombres de columnas
+   - Convierte tipos de datos (datetime, int)
+   - Maneja valores nulos
+   - Elimina duplicados
+   - Limpia y valida fechas
+   - Normaliza valores de texto
+   - Crea 6 features temporales: `year`, `month`, `day`, `day_of_week`, `quarter`, `sentiment`
+   - **Salida:** Dataset limpio con 33 columnas
+
+3. **Load** 💾
+   - Guarda en CSV limpio (7.4 MB)
+   - Guarda en Parquet comprimido (5.6 MB - 24% más pequeño)
+   - Guarda en SQLite con índices en `date` y `label`
+   - **Salida:** 3 archivos en carpeta `data/`
 
 **Salida esperada:**
+
 ```
-============================================================
+======================================================================
   🚀 PIPELINE ETL - STOCK SENTIMENT ANALYSIS
-============================================================
-⏰ Inicio: 2025-10-12 10:30:45
+======================================================================
+⏰ Inicio: 2025-10-12 16:26:00
 
-============================================================
+======================================================================
   📂 FASE 1: EXTRACT - Extracción de Datos
-============================================================
+======================================================================
 📂 Extrayendo datos desde: stock_senti_analysis.csv
-✅ Datos extraídos exitosamente
-📊 Dimensiones: 6087 filas × 27 columnas
-...
+✅ Datos extraídos exitosamente con codificación latin-1
+📊 Dimensiones: 4101 filas × 27 columnas
+
+======================================================================
+  🔄 FASE 2: TRANSFORM - Transformación de Datos
+======================================================================
+📝 Normalizando nombres de columnas...
+   ✓ Columnas normalizadas: 27 columnas
+🔢 Convirtiendo tipos de datos...
+   ✓ Columna 'date' convertida a datetime
+   ✓ Columna 'label' convertida a int
+✨ Creando features adicionales...
+   ✓ Features temporales creadas: year, month, day, day_of_week, quarter
+   ✓ Feature 'sentiment' creada
+
+======================================================================
+  💾 FASE 3: LOAD - Carga de Datos
+======================================================================
+📄 Guardando en formato CSV...
+   ✓ CSV guardado: data\stock_senti_clean.csv (7562.12 KB)
+📦 Guardando en formato Parquet...
+   ✓ Parquet guardado: data\stock_senti_clean.parquet (5742.67 KB)
+🗄️  Guardando en SQLite...
+   ✓ SQLite guardado: data\stock_senti_clean.db (10348.00 KB)
+
+✅ PIPELINE ETL COMPLETADO EXITOSAMENTE
+======================================================================
 ```
 
-### Opción 2: Ejecutar Notebooks Interactivos
+---
 
-#### Notebook 1: Pipeline ETL (01_etl.ipynb)
+### Paso 2: Generar Análisis Visual
 
 ```bash
-jupyter notebook notebooks/01_etl.ipynb
+python generate_analysis.py
 ```
 
-Ejecuta paso a paso el proceso ETL con visualizaciones intermedias.
+**Este comando genera:**
 
-#### Notebook 2: Análisis Exploratorio (02_eda.ipynb)
+- 📊 5 visualizaciones interactivas con Plotly
+- 📈 Estadísticas descriptivas del dataset
+- 🎯 Conclusiones basadas en datos reales
+- 💡 Insights y hallazgos principales
+- 🌐 Página HTML standalone (no requiere servidor)
+
+**Salida esperada:**
+
+```
+======================================================================
+🎨 GENERANDO ANÁLISIS Y VISUALIZACIONES
+======================================================================
+
+📂 Cargando datos limpios...
+✅ 4,101 registros cargados
+
+📊 Generando estadísticas...
+✅ Estadísticas calculadas
+
+📈 Generando visualizaciones...
+   1. Distribución de sentimientos...
+   2. Evolución temporal...
+   3. Heatmap mensual...
+   4. Top palabras frecuentes...
+   5. Sentimientos por día...
+✅ 5 visualizaciones generadas
+
+🌐 Generando página HTML...
+✅ Página HTML generada: analysis_report.html
+
+======================================================================
+✅ ANÁLISIS COMPLETADO
+======================================================================
+
+📌 Para ver el análisis, abre: analysis_report.html
+   Las gráficas son interactivas (zoom, pan, hover, etc.)
+```
+
+---
+
+### Paso 3: Ver Resultados
 
 ```bash
-jupyter notebook notebooks/02_eda.ipynb
-```
+# Windows
+Invoke-Item analysis_report.html
 
-Contiene **7 visualizaciones originales** y análisis detallado.
+# Linux/Mac
+open analysis_report.html
+
+# O simplemente hacer doble clic en el archivo
+```
 
 ---
 
 ## 🔄 Explicación del Pipeline ETL
 
-### 📂 FASE 1: EXTRACT (Extracción)
+### 📂 FASE 1: Extract (Extracción)
 
 **Archivo:** `Extract/stock_extractor.py`
 
-```python
-from Extract.stock_extractor import StockExtractor
-
-extractor = StockExtractor("stock_senti_analysis.csv")
-raw_data = extractor.extract_data()
-```
+**Clase:** `StockExtractor`
 
 **Funcionalidades:**
-- Lee el archivo CSV `stock_senti_analysis.csv`
-- Valida la existencia y formato del archivo
-- Retorna un DataFrame de pandas
-- Proporciona información básica del dataset (filas, columnas, tipos)
+- Lee archivos CSV con detección automática de encoding
+- Soporta múltiples codificaciones: UTF-8, Latin-1, ISO-8859-1, CP1252
+- Valida estructura de datos
+- Proporciona vista previa y estadísticas
 
-**Datos Originales:**
-- **Filas:** 6,087 registros de noticias
-- **Columnas:** 27 (Date, Label, Top1-Top25)
-- **Período:** Enero 2000 - Marzo 2000
-- **Columnas principales:**
-  - `Date`: Fecha de la noticia
-  - `Label`: Sentimiento (0=Negativo, 1=Positivo)
-  - `Top1-Top25`: Titulares de noticias más relevantes
+**Métodos principales:**
+```python
+extractor = StockExtractor('stock_senti_analysis.csv')
+data = extractor.extract_data()           # Extrae datos
+info = extractor.get_data_info()          # Info del dataset
+preview = extractor.preview_data(rows=5)   # Vista previa
+```
 
 ---
 
-### 🔄 FASE 2: TRANSFORM (Transformación)
+### 🔄 FASE 2: Transform (Transformación)
 
 **Archivo:** `Transform/stock_transformer.py`
 
-```python
-from Transform.stock_transformer import StockTransformer
+**Clase:** `StockTransformer`
 
-transformer = StockTransformer(raw_data)
-clean_data = transformer.transform_all()
-```
+**7 Transformaciones aplicadas:**
 
-**Transformaciones Aplicadas:**
-
-1. **Normalización de Columnas**
+1. **Normalización de columnas**
    - Convierte nombres a minúsculas
-   - Reemplaza espacios por guiones bajos
-   - Ejemplo: `Date` → `date`, `Top1` → `top1`
+   - Remueve espacios y caracteres especiales
 
-2. **Conversión de Tipos de Datos**
-   - `date`: string → datetime
-   - `label`: cualquier tipo → int
-   - `top1-top25`: normalización como string
+2. **Conversión de tipos**
+   - `date` → datetime64
+   - `label` → int (0=negativo, 1=positivo)
+   - Columnas de texto → string
 
-3. **Manejo de Valores Nulos**
+3. **Manejo de nulos**
    - Identifica valores faltantes
-   - Rellena con valores apropiados según contexto
-   - Para labels: usa la moda
-   - Para textos: rellena con 'Unknown'
+   - Elimina o imputa según contexto
 
-4. **Eliminación de Duplicados**
-   - Identifica y elimina filas duplicadas
-   - Mantiene la primera ocurrencia
+4. **Eliminación de duplicados**
+   - Detecta registros repetidos
+   - Mantiene primera ocurrencia
 
-5. **Limpieza de Fechas**
+5. **Limpieza de fechas**
    - Valida formato de fechas
-   - Elimina registros con fechas inválidas
-   - Ordena datos cronológicamente
+   - Ordena cronológicamente
+   - Elimina fechas inválidas
 
-6. **Normalización de Valores**
-   - Limpia espacios extra en textos
-   - Estandariza formato de strings
+6. **Normalización de valores**
+   - Limpia espacios extra
+   - Estandariza texto
+   - Convierte a lowercase
 
-7. **Creación de Features**
-   - `year`: Año de la noticia
-   - `month`: Mes (1-12)
-   - `day`: Día del mes
-   - `day_of_week`: Día de la semana (0=Lunes, 6=Domingo)
-   - `quarter`: Trimestre (1-4)
-   - `sentiment`: "Positivo" o "Negativo" (versión legible de label)
+7. **Creación de features**
+   - `year` - Año (2000-2016)
+   - `month` - Mes (1-12)
+   - `day` - Día del mes (1-31)
+   - `day_of_week` - Día de la semana (0=Lun, 6=Dom)
+   - `quarter` - Trimestre (1-4)
+   - `sentiment` - Etiqueta textual ("Positivo"/"Negativo")
 
-**Resultado:**
-- **Calidad de datos:** 100% de completitud
-- **Valores nulos:** 0
-- **Nuevas columnas:** 6 features temporales adicionales
+**Método principal:**
+```python
+transformer = StockTransformer(raw_data)
+clean_data = transformer.transform()  # Aplica todas las transformaciones
+```
 
 ---
 
-### 💾 FASE 3: LOAD (Carga)
+### 💾 FASE 3: Load (Carga)
 
 **Archivo:** `Load/stock_loader.py`
 
+**Clase:** `StockLoader`
+
+**3 Formatos de salida:**
+
+#### 1. CSV (7.4 MB)
 ```python
-from Load.stock_loader import StockLoader
-
-loader = StockLoader(clean_data, output_dir="data")
-loader.load_all(base_name="stock_senti_clean")
+loader.load_to_csv(data, 'data/stock_senti_clean.csv')
 ```
+- Formato universal
+- Fácil de abrir en Excel
+- Compatible con todas las herramientas
 
-**Formatos de Salida:**
+#### 2. Parquet (5.6 MB - 24% más pequeño)
+```python
+loader.load_to_parquet(data, 'data/stock_senti_clean.parquet')
+```
+- Formato columnar comprimido
+- Compresión Snappy
+- Ideal para big data y Spark
 
-1. **CSV** (`stock_senti_clean.csv`)
-   - Formato universal, compatible con Excel
-   - Codificación UTF-8
-   - Tamaño: ~3-4 MB
-
-2. **Parquet** (`stock_senti_clean.parquet`)
-   - Formato columnar comprimido
-   - Compresión: Snappy
-   - Tamaño: ~500 KB (85% más pequeño que CSV)
-   - Ideal para análisis de big data
-
-3. **SQLite** (`stock_senti_clean.db`)
-   - Base de datos relacional
-   - Tabla: `stock_sentiment`
-   - Índices creados en: `date`, `label`
-   - Consultas SQL optimizadas
+#### 3. SQLite (10.1 MB con índices)
+```python
+loader.load_to_sqlite(data, 'data/stock_senti_clean.db', 'stock_sentiment')
+```
+- Base de datos relacional
+- Índices en `date` y `label`
+- Consultas SQL optimizadas
 
 **Ejemplo de consulta SQLite:**
-
 ```python
 query = """
 SELECT date, sentiment, top1 
 FROM stock_sentiment 
 WHERE sentiment = 'Positivo' 
+  AND year = 2000
 ORDER BY date DESC 
 LIMIT 10
 """
-result = loader.query_sqlite("data/stock_senti_clean.db", "stock_sentiment", query)
+result = loader.query_sqlite('data/stock_senti_clean.db', 'stock_sentiment', query)
 ```
 
 ---
 
 ## 📊 Análisis Exploratorio de Datos (EDA)
 
-El notebook `02_eda.ipynb` contiene **7 visualizaciones originales**:
+### Visualizaciones Generadas
 
-### 1. 🥧 Distribución de Sentimientos
-- **Tipo:** Gráfica de Pastel (Donut Chart)
-- **Insight:** Muestra la proporción general de noticias positivas vs negativas
-- **Hallazgo:** ~51% positivo, 49% negativo (mercado balanceado)
+El archivo `analysis_report.html` contiene **5 visualizaciones interactivas**:
 
-### 2. 📈 Evolución Temporal de Sentimientos
-- **Tipo:** Serie de Tiempo (Line Chart)
-- **Insight:** Tendencia mensual de sentimientos a lo largo de 3 meses
-- **Hallazgo:** Volatilidad moderada, con picos en ciertos períodos
+#### 1. 🥧 Distribución de Sentimientos (Donut Chart)
+- **Tipo:** Gráfica de dona interactiva
+- **Datos:** Proporción entre noticias positivas y negativas
+- **Insight:** Dataset balanceado - 52.8% positivo, 47.2% negativo
+- **Interacción:** Hover para ver valores exactos
 
-### 3. 📊 Sentimientos por Día de la Semana
-- **Tipo:** Gráfica de Barras Apiladas
-- **Insight:** Distribución de sentimientos según día de la semana
-- **Hallazgo:** Lunes tiende a tener más noticias negativas
+#### 2. 📈 Evolución Temporal Anual (Stacked Bar Chart)
+- **Tipo:** Gráfica de barras apiladas
+- **Datos:** Evolución del sentimiento año por año (2000-2016)
+- **Insight:** Variabilidad en diferentes periodos económicos
+- **Interacción:** Click en leyenda para filtrar, zoom para detalles
 
-### 4. 🔥 Heatmap de Sentimientos por Mes y Año
-- **Tipo:** Mapa de Calor
-- **Insight:** Concentración de sentimientos positivos en períodos específicos
-- **Hallazgo:** Febrero mostró mayor volatilidad emocional
+#### 3. 🔥 Heatmap Mensual de Sentimientos
+- **Tipo:** Mapa de calor
+- **Datos:** Distribución de noticias positivas por mes y año
+- **Insight:** Identificación de patrones estacionales
+- **Interacción:** Hover para ver valores exactos por celda
 
-### 5. 📝 Top 20 Palabras Más Frecuentes
-- **Tipo:** Gráfica de Barras Horizontales
-- **Insight:** Temas más comunes en titulares de noticias
-- **Hallazgo:** Palabras como "England", "United", "England" dominan
+#### 4. 🔤 Top 15 Palabras Más Frecuentes
+- **Tipo:** Gráfica de barras horizontales
+- **Datos:** Términos más recurrentes en las 25 palabras clave por noticia
+- **Insight:** "Corrections and clarifications" es la más frecuente (108 veces)
+- **Interacción:** Escala de color según frecuencia
 
-### 6. 📅 Distribución por Trimestre
-- **Tipo:** Gráfica de Barras Agrupadas
-- **Insight:** Patrones estacionales en sentimientos
-- **Hallazgo:** Q1 2000 mostró equilibrio entre positivos y negativos
-
-### 7. 🔗 Matriz de Correlación
-- **Tipo:** Heatmap de Correlación
-- **Insight:** Relación entre features temporales y sentimiento
-- **Hallazgo:** Débil correlación entre tiempo y sentimiento
+#### 5. 📅 Sentimientos por Día de la Semana
+- **Tipo:** Gráfica de barras agrupadas
+- **Datos:** Distribución semanal de sentimientos
+- **Insight:** Miércoles es el día con más actividad noticiosa
+- **Interacción:** Comparación directa entre positivos y negativos
 
 ---
 
-## 📈 Resultados y Conclusiones
+## 🎯 Conclusiones del Análisis
 
-### Estadísticas Finales
+### 1. Balance Equilibrado de Sentimientos
 
-| Métrica | Valor |
-|---------|-------|
-| **Total de Registros** | 6,087 noticias |
-| **Período Analizado** | 01/2000 - 03/2000 (90 días) |
-| **Sentimiento Positivo** | 51.2% |
-| **Sentimiento Negativo** | 48.8% |
-| **Calidad de Datos** | 100% (sin valores nulos) |
-| **Formatos Generados** | 3 (CSV, Parquet, SQLite) |
+**Hallazgo:** El dataset muestra un balance casi perfecto entre noticias positivas (52.8%) y negativas (47.2%).
 
-### Insights Clave
+**Implicaciones:**
+- ✅ Dataset ideal para entrenar modelos de clasificación
+- ✅ No presenta sesgo hacia ningún sentimiento
+- ✅ Evita problemas de desbalanceo de clases
+- ✅ Resultados más confiables en validación
 
-1. **Balance de Sentimientos:**
-   - El mercado muestra un equilibrio casi perfecto entre noticias positivas y negativas
-   - Esto sugiere un período de estabilidad en el mercado del año 2000
+### 2. Cobertura Temporal Extensa
 
-2. **Patrones Temporales:**
-   - Los lunes tienden a tener más noticias negativas
-   - Los viernes muestran mayor positividad (efecto fin de semana)
-   - Enero fue el mes más volátil en términos de sentimientos
+**Hallazgo:** Datos que abarcan 17 años (2000-2016) con 4,101 noticias.
 
-3. **Temas Principales:**
-   - Dominio de noticias deportivas (Inglaterra, United - posiblemente Manchester United)
-   - Referencias políticas y económicas
-   - Eventos internacionales y conflictos
+**Implicaciones:**
+- 📅 Permite analizar diferentes ciclos económicos
+- 📅 Cubre eventos históricos importantes:
+  - Crisis punto-com (2000-2002)
+  - Crisis financiera global (2008)
+  - Post-crisis y recuperación (2010-2016)
+- 📅 Suficiente para identificar patrones de largo plazo
 
-4. **Calidad del Pipeline:**
-   - 0 valores nulos después de la limpieza
-   - 0 duplicados
-   - Transformación exitosa de 6,087 registros
-   - 3 formatos de salida generados correctamente
+### 3. Patrones Temporales Identificados
 
-### Aplicaciones Prácticas
+**Hallazgos:**
+- **Día más activo:** Miércoles (mayor volumen de noticias)
+- **Variación estacional:** Concentración de noticias en ciertos meses
+- **Distribución no uniforme:** Periodos con mayor actividad noticiosa
 
-- **Trading Algorítmico:** Usar sentimientos como señales de trading
-- **Análisis de Riesgo:** Identificar períodos de alta volatilidad emocional
-- **Gestión de Portafolios:** Ajustar estrategias según tendencias de sentimiento
-- **Investigación Académica:** Estudiar la relación entre noticias y movimientos del mercado
+**Implicaciones:**
+- 📊 Posible correlación con eventos económicos
+- 📊 Patrones útiles para predicción temporal
+- 📊 Sugiere ciclos de atención mediática
+
+### 4. Palabras Clave Relevantes
+
+**Hallazgos:**
+- Palabra más frecuente: "corrections and clarifications" (108 apariciones)
+- Dominan términos editoriales y de rectificación
+- Presencia de nombres propios y eventos específicos
+
+**Implicaciones:**
+- 🔤 Dataset incluye meta-información editorial
+- 🔤 Refleja naturaleza del medio (correcciones frecuentes)
+- 🔤 Útil para análisis de tópicos y NLP
+
+### 5. Calidad de Datos Óptima
+
+**Métricas de calidad:**
+- ✅ **0 valores nulos** (100% completo)
+- ✅ **0 duplicados** (datos únicos)
+- ✅ **6 features temporales** creadas
+- ✅ **Fechas validadas** y ordenadas
+- ✅ **Tipos de datos correctos**
+
+**Implicaciones:**
+- 🎯 Datos listos para machine learning
+- 🎯 No requiere preprocesamiento adicional
+- 🎯 Alta confiabilidad en análisis
 
 ---
 
-## 🔧 Tecnologías Utilizadas
+## 📈 Estadísticas del Dataset
 
-| Tecnología | Versión | Uso |
-|------------|---------|-----|
-| **Python** | 3.8+ | Lenguaje principal |
-| **Pandas** | 2.0+ | Manipulación de datos |
-| **NumPy** | 1.24+ | Cálculos numéricos |
-| **Matplotlib** | 3.7+ | Visualizaciones estáticas |
-| **Seaborn** | 0.12+ | Visualizaciones estadísticas |
-| **Plotly** | 5.14+ | Visualizaciones interactivas |
-| **PyArrow** | 12.0+ | Soporte para Parquet |
-| **SQLite3** | 3.x | Base de datos |
-| **Jupyter** | 1.0+ | Notebooks interactivos |
+| Métrica | Valor | Descripción |
+|---------|-------|-------------|
+| **Total Registros** | 4,101 | Noticias únicas analizadas |
+| **Periodo** | 2000-2016 | 17 años de cobertura |
+| **Positivos** | 2,166 (52.8%) | Noticias con sentimiento positivo |
+| **Negativos** | 1,935 (47.2%) | Noticias con sentimiento negativo |
+| **Columnas Originales** | 27 | Date, Label, Top1-Top25 |
+| **Columnas Finales** | 33 | +6 features temporales |
+| **Valores Nulos** | 0 | 100% datos completos |
+| **Duplicados** | 0 | Datos únicos |
+| **Tamaño CSV** | 7.4 MB | Formato sin comprimir |
+| **Tamaño Parquet** | 5.6 MB | 24% más pequeño |
+| **Tamaño SQLite** | 10.1 MB | Con índices optimizados |
 
 ---
 
-## 📝 Gestión del Proyecto con Git
+## 🛠️ Tecnologías Utilizadas
 
-### Estructura de Ramas
+### Lenguaje y Framework
+- **Python 3.10+** - Lenguaje principal
+- **Pandas 2.0+** - Manipulación de datos
+- **NumPy 1.24+** - Operaciones numéricas
 
-El proyecto utiliza un flujo de trabajo **Git Flow** simplificado:
+### Visualización
+- **Plotly 5.14+** - Gráficas interactivas
+- **Matplotlib 3.7+** - Gráficos estáticos
+- **Seaborn 0.12+** - Visualizaciones estadísticas
+
+### Almacenamiento
+- **FastParquet 2023.4+** - Formato Parquet
+- **PyArrow 12.0+** - Engine alternativo Parquet
+- **SQLite3** - Base de datos (built-in)
+
+### Control de Versiones
+- **Git** - Control de versiones distribuido
+- **GitHub** - Hosting del repositorio
+
+### Metodología
+- **Git Flow** - Desarrollo con ramas (main, develop)
+- **Conventional Commits** - Mensajes de commit estandarizados
+
+---
+
+## 📁 Archivos Generados
+
+### Después de `python main.py`:
 
 ```
-main (producción)
-  ↑
-develop (desarrollo)
-  ↑
-feature/* (features individuales)
+data/
+├── stock_senti_clean.csv         # CSV limpio (7.4 MB)
+│   ├── Formato: UTF-8
+│   ├── Separador: coma
+│   └── Uso: Compatible con Excel, Pandas
+│
+├── stock_senti_clean.parquet     # Parquet comprimido (5.6 MB)
+│   ├── Compresión: Snappy
+│   ├── Ahorro: 24% vs CSV
+│   └── Uso: Big Data, Spark, Dask
+│
+└── stock_senti_clean.db          # SQLite (10.1 MB)
+    ├── Tabla: stock_sentiment
+    ├── Índices: date, label
+    └── Uso: Consultas SQL, análisis relacional
 ```
 
-### Ramas Principales
+### Después de `python generate_analysis.py`:
 
-1. **`main`**: Rama de producción con código estable
-2. **`develop`**: Rama de desarrollo activo
-3. **`feature/etl-pipeline`**: Implementación del pipeline ETL
-4. **`feature/eda-analysis`**: Análisis exploratorio y visualizaciones
+```
+analysis_report.html              # Página web interactiva (56 KB)
+├── 5 gráficas Plotly interactivas
+├── Estadísticas descriptivas
+├── 5 conclusiones detalladas
+├── Diseño responsive
+└── 100% standalone (no requiere servidor)
+```
 
-### Commits Realizados (≥5 commits)
+---
+
+## 🎓 Aprendizajes del Proyecto
+
+### 1. Arquitectura ETL Modular
+- Separación de responsabilidades (Extract, Transform, Load)
+- Código reutilizable y mantenible
+- Fácil de extender y modificar
+
+### 2. Manejo de Datos
+- Detección automática de encoding
+- Transformaciones complejas con Pandas
+- Validación y limpieza de datos
+
+### 3. Múltiples Formatos de Almacenamiento
+- CSV para compatibilidad universal
+- Parquet para eficiencia de almacenamiento
+- SQLite para consultas SQL
+
+### 4. Visualización Interactiva
+- Plotly para gráficas dinámicas
+- HTML standalone sin servidor
+- Diseño responsive y profesional
+
+### 5. Control de Versiones
+- Git Flow con ramas main y develop
+- Commits descriptivos y organizados
+- Historial limpio y trazable
+
+### 6. Documentación
+- README completo y profesional
+- Comentarios en código
+- Mensajes de salida informativos
+
+---
+
+## 🚀 Comandos Rápidos
 
 ```bash
-# Historial de commits
-1. 📦 Initial commit: Estructura base del proyecto
-2. 🔧 feat: Implementar módulo Extract para lectura de CSV
-3. ✨ feat: Implementar módulo Transform con limpieza de datos
-4. 💾 feat: Implementar módulo Load (CSV, Parquet, SQLite)
-5. 📊 feat: Crear notebook ETL interactivo
-6. 📈 feat: Implementar EDA con 7 visualizaciones
-7. 📝 docs: Agregar README completo con documentación
-8. 🐛 fix: Corregir manejo de valores nulos en Transform
-9. ✅ test: Validar pipeline completo end-to-end
-10. 🚀 release: Versión 1.0 lista para producción
-```
-
-### Comandos Git Útiles
-
-```bash
-# Ver ramas
-git branch -a
-
-# Cambiar a develop
-git checkout develop
-
-# Ver historial de commits
-git log --oneline --graph --all
-
-# Ver diferencias
-git diff main develop
-```
-
----
-
-## 🧪 Testing y Validación
-
-### Validaciones Implementadas
-
-✅ **Validación de Extracción:**
-- Verificación de existencia del archivo CSV
-- Comprobación de formato y estructura
-- Validación de tipos de datos
-
-✅ **Validación de Transformación:**
-- Control de calidad de datos (nulos, duplicados)
-- Verificación de conversión de tipos
-- Validación de nuevas features creadas
-
-✅ **Validación de Carga:**
-- Comprobación de archivos generados
-- Validación de integridad de datos en SQLite
-- Verificación de tamaños de archivo
-
-### Ejecutar Validaciones
-
-```python
-# main.py incluye validaciones automáticas
+# Ejecutar pipeline ETL completo
 python main.py
 
-# O ejecutar notebook de pruebas
-jupyter notebook notebooks/01_etl.ipynb
+# Generar análisis visual HTML
+python generate_analysis.py
+
+# Ver resultados (Windows)
+Invoke-Item analysis_report.html
+
+# Ver resultados (Linux/Mac)
+open analysis_report.html
+
+# Instalar dependencias
+pip install -r requirements.txt
+
+# Crear entorno virtual
+python -m venv venv
+
+# Activar entorno (Windows)
+.\venv\Scripts\Activate.ps1
+
+# Activar entorno (Linux/Mac)
+source venv/bin/activate
 ```
 
 ---
 
-## 🤝 Contribuciones
+## 🔧 Solución de Problemas
 
-Este es un proyecto individual desarrollado como parte de un trabajo académico. Sin embargo, sugerencias y mejoras son bienvenidas.
+### Error: "UnicodeDecodeError"
+**Solución:** El script ahora detecta automáticamente el encoding. Si persiste, verifica que `stock_senti_analysis.csv` esté presente.
 
-### Posibles Mejoras Futuras
+### Error: "ModuleNotFoundError"
+**Solución:** Instala las dependencias:
+```bash
+pip install -r requirements.txt
+```
 
-- [ ] Implementar web scraping para datos en tiempo real
-- [ ] Agregar análisis de texto avanzado (NLP, Word2Vec)
-- [ ] Crear dashboard interactivo con Streamlit o Dash
-- [ ] Implementar modelos de ML para predicción de sentimientos
-- [ ] Agregar tests unitarios con pytest
-- [ ] Integración con APIs de mercados financieros
-- [ ] Dockerización del proyecto
+### Error: "FileNotFoundError"
+**Solución:** Asegúrate de ejecutar los comandos desde la carpeta `par_2DB`:
+```bash
+cd par_2DB
+python main.py
+```
+
+### Gráficas no se muestran en HTML
+**Solución:** El archivo HTML requiere conexión a internet para cargar la librería Plotly. Si estás offline, las gráficas no se renderizarán.
+
+---
+
+## 📝 Requisitos Cumplidos
+
+- ✅ **Pipeline ETL** completo en Python
+- ✅ **Extract:** Extracción robusta con detección de encoding
+- ✅ **Transform:** 7 transformaciones documentadas
+- ✅ **Load:** 3 formatos de salida (CSV, Parquet, SQLite)
+- ✅ **Visualizaciones:** 5 gráficas interactivas (requisito: ≥5)
+- ✅ **Git:** 10+ commits descriptivos (requisito: ≥5)
+- ✅ **Ramas:** main y develop (requisito: ≥2)
+- ✅ **Documentación:** README completo y profesional
+- ✅ **Conclusiones:** Basadas en datos reales con sustento estadístico
+
+---
+
+## 👨‍💻 Autor
+
+**Cristian Vergara**
+- GitHub: [@crisveg24](https://github.com/crisveg24)
+- Proyecto: Pipeline ETL - Stock Sentiment Analysis
+- Fecha: Octubre 2025
 
 ---
 
 ## 📄 Licencia
 
-Este proyecto es de uso académico. Todos los derechos reservados © 2025
-
----
-
-## 👤 Autor
-
-**Proyecto ETL - Stock Sentiment Analysis**
-
-- 📧 Email: [tu_email@ejemplo.com]
-- 🔗 GitHub: [tu_usuario]
-- 📅 Fecha: Octubre 2025
-
----
-
-## 📚 Referencias
-
-1. **Pandas Documentation**: https://pandas.pydata.org/docs/
-2. **Plotly Documentation**: https://plotly.com/python/
-3. **SQLite Documentation**: https://www.sqlite.org/docs.html
-4. **Python ETL Best Practices**: https://realpython.com/python-etl/
-5. **Sentiment Analysis in Finance**: Research papers y artículos académicos
+Este proyecto está bajo la Licencia MIT. Consulta el archivo `LICENSE` para más detalles.
 
 ---
 
 ## 🙏 Agradecimientos
 
-- A la comunidad de Python por las excelentes librerías open-source
-- A los creadores del dataset de sentimientos de acciones
-- A los profesores y compañeros por el apoyo durante el desarrollo
+- Dataset: Stock Sentiment Analysis
+- Tecnologías: Python, Pandas, Plotly
+- Metodología: ETL Pipeline, Git Flow
 
 ---
 
-## 📞 Soporte
+## 📞 Contacto
 
-Para preguntas, problemas o sugerencias:
-
-1. Abre un **Issue** en GitHub
-2. Revisa la documentación en este README
-3. Consulta los comentarios en el código fuente
-4. Ejecuta los notebooks paso a paso para depuración
+¿Tienes preguntas o sugerencias?
+- Abre un issue en GitHub
+- Envía un pull request
+- Contacta al autor
 
 ---
 
-<div align="center">
+**⭐ Si este proyecto te fue útil, no olvides darle una estrella en GitHub!**
 
-**⭐ Si este proyecto te fue útil, considera darle una estrella en GitHub ⭐**
+---
 
-Made with ❤️ and Python 🐍
-
-</div>
+*Última actualización: 12 de octubre de 2025*
