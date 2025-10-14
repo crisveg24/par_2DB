@@ -108,12 +108,15 @@ class StockTransformer:
             except Exception as e:
                 print(f"   ⚠ No se pudo convertir 'label': {e}")
         
-        # Convertir columnas Top a string si es necesario
+        # Convertir columnas Top a string y manejar NaN
         top_cols = [col for col in self.clean_data.columns if col.startswith('top')]
         for col in top_cols:
-            if self.clean_data[col].dtype == 'object':
-                self.clean_data[col] = self.clean_data[col].astype(str)
-                conversions += 1
+            # Primero rellenar NaN antes de convertir a string
+            self.clean_data[col] = self.clean_data[col].fillna('')
+            self.clean_data[col] = self.clean_data[col].astype(str)
+            # Limpiar valores 'nan' que pudieran haber quedado
+            self.clean_data[col] = self.clean_data[col].replace('nan', '')
+            conversions += 1
         
         if conversions > 0:
             self.transformation_log.append({
@@ -141,12 +144,19 @@ class StockTransformer:
                 if col == 'label':
                     mode_val = self.clean_data[col].mode()[0] if not self.clean_data[col].mode().empty else 0
                     self.clean_data[col].fillna(mode_val, inplace=True)
+                    print(f"   ✓ '{col}' rellenado con moda: {mode_val}")
         
-        # Para columnas de texto (Top1-Top25), rellenar con string vacío o 'Unknown'
+        # Para columnas de texto (Top1-Top25), rellenar con string vacío
         text_cols = [col for col in self.clean_data.columns if col.startswith('top')]
+        nulls_filled = 0
         for col in text_cols:
             if self.clean_data[col].isnull().any():
-                self.clean_data[col].fillna('Unknown', inplace=True)
+                null_count = self.clean_data[col].isnull().sum()
+                self.clean_data[col].fillna('', inplace=True)
+                nulls_filled += null_count
+        
+        if nulls_filled > 0:
+            print(f"   ✓ {nulls_filled} valores nulos en columnas de texto rellenados con string vacío")
         
         nulls_after = self.clean_data.isnull().sum().sum()
         
