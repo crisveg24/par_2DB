@@ -64,7 +64,14 @@ class StockLoader:
         file_path = os.path.join(self.output_dir, f"{file_name}.csv")
         
         try:
-            self.data.to_csv(file_path, index=False, encoding='utf-8')
+            # Asegurar que no haya NaN antes de guardar - reemplazar con strings vacíos
+            data_to_save = self.data.copy()
+            # Reemplazar NaN solo en columnas de texto
+            text_cols = data_to_save.select_dtypes(include=['object']).columns
+            for col in text_cols:
+                data_to_save[col] = data_to_save[col].fillna('')
+            
+            data_to_save.to_csv(file_path, index=False, encoding='utf-8', na_rep='')
             file_size = os.path.getsize(file_path) / 1024  # KB
             
             self.load_log.append({
