@@ -30,14 +30,21 @@ class StockExtractor:
         try:
             print(f"📂 Extrayendo datos desde: {self.file_path}")
             
-            # Leer el CSV
-            self.data = pd.read_csv(self.file_path)
+            # Intentar con diferentes codificaciones
+            encodings = ['utf-8', 'latin-1', 'iso-8859-1', 'cp1252']
             
-            print(f"✅ Datos extraídos exitosamente")
-            print(f"📊 Dimensiones: {self.data.shape[0]} filas × {self.data.shape[1]} columnas")
-            print(f"📋 Columnas: {list(self.data.columns)}")
+            for encoding in encodings:
+                try:
+                    self.data = pd.read_csv(self.file_path, encoding=encoding)
+                    print(f"✅ Datos extraídos exitosamente con codificación {encoding}")
+                    print(f"📊 Dimensiones: {self.data.shape[0]} filas × {self.data.shape[1]} columnas")
+                    print(f"📋 Columnas: {list(self.data.columns)}")
+                    return self.data
+                except UnicodeDecodeError:
+                    continue
             
-            return self.data
+            # Si ninguna codificación funciona
+            raise UnicodeDecodeError("No se pudo decodificar el archivo con las codificaciones probadas")
             
         except FileNotFoundError:
             print(f"❌ Error: No se encontró el archivo {self.file_path}")
