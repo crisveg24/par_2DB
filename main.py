@@ -17,6 +17,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from collections import Counter
+import webbrowser
 
 # Agregar el directorio actual al path para imports
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -89,7 +90,16 @@ def generate_html_report(df: pd.DataFrame):
         f.write(html_content)
     
     print(f"\n✅ Reporte HTML generado: {output_path}")
-    print(f"💡 Abre el archivo en tu navegador para ver el análisis completo")
+    print(f"🌐 Abriendo reporte en el navegador...")
+    
+    # Abrir automáticamente en el navegador
+    try:
+        abs_path = os.path.abspath(output_path)
+        webbrowser.open('file://' + abs_path)
+        print(f"✓ Reporte abierto en el navegador predeterminado")
+    except Exception as e:
+        print(f"⚠ No se pudo abrir automáticamente: {e}")
+        print(f"💡 Abre manualmente el archivo: {output_path}")
     
     return output_path
 
@@ -159,8 +169,10 @@ def create_temporal_evolution(df: pd.DataFrame):
 
 def create_weekday_analysis(df: pd.DataFrame):
     """Crea gráfica de sentimientos por día de semana"""
-    days_mapping = {0: 'Lunes', 1: 'Martes', 2: 'Miércoles', 3: 'Jueves', 4: 'Viernes', 5: 'Sábado', 6: 'Domingo'}
-    df_temp = df.copy()
+    days_mapping = {0: 'Lunes', 1: 'Martes', 2: 'Miércoles', 3: 'Jueves', 4: 'Viernes'}
+    
+    # Filtrar solo días que existen en los datos
+    df_temp = df[df['day_of_week'].isin(days_mapping.keys())].copy()
     df_temp['day_name'] = df_temp['day_of_week'].map(days_mapping)
     
     day_sentiment = df_temp.groupby(['day_name', 'sentiment']).size().reset_index(name='count')
@@ -169,7 +181,8 @@ def create_weekday_analysis(df: pd.DataFrame):
                  title='📊 Distribución de Sentimientos por Día de la Semana',
                  labels={'day_name': 'Día de la Semana', 'count': 'Cantidad', 'sentiment': 'Sentimiento'},
                  color_discrete_map={'Positivo': '#2ecc71', 'Negativo': '#e74c3c'},
-                 category_orders={'day_name': ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']})
+                 category_orders={'day_name': ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes']},
+                 barmode='group')  # Cambiar a barras agrupadas para mejor visualización
     
     fig.update_layout(
         title={'x': 0.5, 'xanchor': 'center', 'font': {'size': 20}},
@@ -185,14 +198,31 @@ def create_monthly_heatmap(df: pd.DataFrame):
     df_heatmap = df.groupby(['year', 'month'])['label'].mean().reset_index()
     df_pivot = df_heatmap.pivot(index='year', columns='month', values='label')
     
+    # Crear etiquetas de texto con el conteo de noticias para cada celda
+    df_count = df.groupby(['year', 'month']).size().reset_index(name='count')
+    df_count_pivot = df_count.pivot(index='year', columns='month', values='count')
+    
+    # Crear texto hover personalizado
+    hover_text = []
+    for i, year in enumerate(df_pivot.index):
+        hover_row = []
+        for j, month in enumerate(df_pivot.columns):
+            value = df_pivot.iloc[i, j]
+            count = df_count_pivot.iloc[i, j] if not pd.isna(df_count_pivot.iloc[i, j]) else 0
+            if pd.notna(value):
+                hover_row.append(f'Año: {year}<br>Mes: {month}<br>Promedio: {value:.3f}<br>Noticias: {int(count)}')
+            else:
+                hover_row.append(f'Año: {year}<br>Mes: {month}<br>Sin datos')
+        hover_text.append(hover_row)
+    
     fig = go.Figure(data=go.Heatmap(
         z=df_pivot.values,
         x=['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
         y=df_pivot.index,
         colorscale='RdYlGn',
-        text=df_pivot.values,
-        texttemplate='%{text:.2f}',
-        colorbar=dict(title="Promedio<br>Sentimiento")
+        hovertext=hover_text,
+        hoverinfo='text',
+        colorbar=dict(title="Promedio<br>Sentimiento<br>(0=Neg, 1=Pos)")
     ))
     
     fig.update_layout(
@@ -209,15 +239,25 @@ def create_monthly_heatmap(df: pd.DataFrame):
 def create_top_words(df: pd.DataFrame):
     """Crea gráfica de top palabras"""
     all_words = []
-    for col in [f'top{i}' for i in range(1, 26)]:
-        words = df[col].dropna().astype(str).str.lower().str.split()
-        all_words.extend([word for sublist in words for word in sublist if len(word) > 3])
     
-    word_counts = Counter(all_words).most_common(20)
+    # Procesar solo las primeras 10 columnas de texto para palabras más relevantes
+    for col in [f'top{i}' for i in range(1, 11)]:
+        if col in df.columns:
+            words = df[col].dropna().astype(str).str.lower().str.split()
+            all_words.extend([word for sublist in words for word in sublist if len(word) > 4])
+    
+    # Palabras comunes a filtrar (stop words básicas)
+    stop_words = {'about', 'after', 'would', 'could', 'should', 'their', 'there', 'these', 
+                  'those', 'which', 'where', 'while', 'being', 'having', 'doing'}
+    
+    # Filtrar stop words
+    filtered_words = [word for word in all_words if word not in stop_words]
+    
+    word_counts = Counter(filtered_words).most_common(20)
     words_df = pd.DataFrame(word_counts, columns=['palabra', 'frecuencia'])
     
     fig = px.bar(words_df, x='frecuencia', y='palabra', orientation='h',
-                 title='📝 Top 20 Palabras Más Frecuentes en Titulares',
+                 title='📝 Top 20 Palabras Más Frecuentes en Titulares (Top 1-10)',
                  labels={'palabra': 'Palabra', 'frecuencia': 'Frecuencia'},
                  color='frecuencia',
                  color_continuous_scale='viridis')
@@ -226,7 +266,7 @@ def create_top_words(df: pd.DataFrame):
         title={'x': 0.5, 'xanchor': 'center', 'font': {'size': 20}},
         yaxis={'categoryorder': 'total ascending'},
         height=500,
-        margin=dict(t=80, b=40, l=100, r=40)
+        margin=dict(t=80, b=40, l=120, r=40)
     )
     
     return fig
@@ -297,21 +337,21 @@ def generate_conclusions(df: pd.DataFrame, stats: dict) -> list:
             'text': f"Las noticias negativas ({stats['negative_pct']:.1f}%) superan a las positivas ({stats['positive_pct']:.1f}%), sugiriendo un período de incertidumbre o volatilidad en los mercados."
         })
     
-    # 2. Patrones Temporales
-    days_mapping = {0: 'Lunes', 1: 'Martes', 2: 'Miércoles', 3: 'Jueves', 4: 'Viernes', 5: 'Sábado', 6: 'Domingo'}
-    df_temp = df.copy()
+    # 2. Patrones Temporales - Solo días laborables
+    days_mapping = {0: 'Lunes', 1: 'Martes', 2: 'Miércoles', 3: 'Jueves', 4: 'Viernes'}
+    df_temp = df[df['day_of_week'].isin(days_mapping.keys())].copy()
     df_temp['day_name'] = df_temp['day_of_week'].map(days_mapping)
     day_sentiment = df_temp.groupby('day_name')['label'].mean().sort_values()
     
     conclusions.append({
         'title': 'Efecto del Día de la Semana',
-        'text': f"El análisis revela patrones interesantes: el {day_sentiment.index[0]} presenta el sentimiento más negativo (promedio: {day_sentiment.values[0]:.2f}), fenómeno conocido como 'Monday Effect' en finanzas. Por el contrario, el {day_sentiment.index[-1]} muestra mayor positividad ({day_sentiment.values[-1]:.2f}), posiblemente debido al optimismo pre-fin de semana."
+        'text': f"El análisis de días laborables revela patrones interesantes: el {day_sentiment.index[0]} presenta el sentimiento más negativo (promedio: {day_sentiment.values[0]:.2f}), fenómeno conocido como 'Monday Effect' en finanzas. Por el contrario, el {day_sentiment.index[-1]} muestra mayor positividad ({day_sentiment.values[-1]:.2f}), posiblemente debido al optimismo pre-fin de semana. Nota: El dataset solo contiene noticias de días laborables (Lunes a Viernes)."
     })
     
     # 3. Cobertura Temporal
     conclusions.append({
         'title': 'Cobertura y Representatividad',
-        'text': f"El dataset abarca {stats['years_covered']} años de noticias financieras ({stats['date_min']} a {stats['date_max']}), procesando un total de {stats['total_records']:,} registros. Esta amplia cobertura temporal proporciona una perspectiva robusta sobre las tendencias del mercado a largo plazo."
+        'text': f"El dataset abarca {stats['years_covered']} años de noticias financieras ({stats['date_min']} a {stats['date_max']}), procesando un total de {stats['total_records']:,} registros. Esta amplia cobertura temporal proporciona una perspectiva robusta sobre las tendencias del mercado a largo plazo, con un promedio de {stats['total_records']//stats['years_covered']:,} noticias por año."
     })
     
     # 4. Calidad de Datos
@@ -323,7 +363,7 @@ def generate_conclusions(df: pd.DataFrame, stats: dict) -> list:
     # 5. Implicaciones Prácticas
     conclusions.append({
         'title': 'Aplicaciones en Trading',
-        'text': f"Los patrones identificados tienen aplicaciones prácticas: el 'Monday Effect' sugiere posibles estrategias de trading basadas en el día de la semana. El balance general {'+' if stats['positive_pct'] > 50 else '-'} indica un contexto de {'optimismo' if stats['positive_pct'] > 50 else 'cautela'} que puede informar decisiones de inversión a largo plazo."
+        'text': f"Los patrones identificados tienen aplicaciones prácticas: el 'Monday Effect' sugiere posibles estrategias de trading basadas en el día de la semana. El balance general {'positivo' if stats['positive_pct'] > 50 else 'negativo'} indica un contexto de {'optimismo' if stats['positive_pct'] > 50 else 'cautela'} que puede informar decisiones de inversión a largo plazo."
     })
     
     return conclusions
