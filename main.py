@@ -47,31 +47,31 @@ def generate_html_report(df: pd.DataFrame):
     
     # 1. Distribución de Sentimientos
     fig1 = create_sentiment_distribution(df)
-    graph1_html = fig1.to_html(include_plotlyjs=False, div_id="graph1")
+    graph1_html = fig1.to_html(include_plotlyjs='cdn', div_id="graph1", config={'displayModeBar': True, 'responsive': True})
     
     # 2. Evolución Temporal
     fig2 = create_temporal_evolution(df)
-    graph2_html = fig2.to_html(include_plotlyjs=False, div_id="graph2")
+    graph2_html = fig2.to_html(include_plotlyjs=False, div_id="graph2", config={'displayModeBar': True, 'responsive': True})
     
     # 3. Sentimientos por Día de Semana
     fig3 = create_weekday_analysis(df)
-    graph3_html = fig3.to_html(include_plotlyjs=False, div_id="graph3")
+    graph3_html = fig3.to_html(include_plotlyjs=False, div_id="graph3", config={'displayModeBar': True, 'responsive': True})
     
     # 4. Heatmap Mensual
     fig4 = create_monthly_heatmap(df)
-    graph4_html = fig4.to_html(include_plotlyjs=False, div_id="graph4")
+    graph4_html = fig4.to_html(include_plotlyjs=False, div_id="graph4", config={'displayModeBar': True, 'responsive': True})
     
     # 5. Top Palabras
     fig5 = create_top_words(df)
-    graph5_html = fig5.to_html(include_plotlyjs=False, div_id="graph5")
+    graph5_html = fig5.to_html(include_plotlyjs=False, div_id="graph5", config={'displayModeBar': True, 'responsive': True})
     
     # 6. Distribución Trimestral
     fig6 = create_quarterly_distribution(df)
-    graph6_html = fig6.to_html(include_plotlyjs=False, div_id="graph6")
+    graph6_html = fig6.to_html(include_plotlyjs=False, div_id="graph6", config={'displayModeBar': True, 'responsive': True})
     
     # 7. Matriz de Correlación
     fig7 = create_correlation_matrix(df)
-    graph7_html = fig7.to_html(include_plotlyjs=False, div_id="graph7")
+    graph7_html = fig7.to_html(include_plotlyjs=False, div_id="graph7", config={'displayModeBar': True, 'responsive': True})
     
     # Generar conclusiones
     conclusions = generate_conclusions(df, stats)
@@ -388,7 +388,6 @@ def create_html_template(stats, graph1, graph2, graph3, graph4, graph5, graph6, 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Análisis de Sentimientos - Stock Market</title>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <style>
         * {{
             margin: 0;
@@ -484,6 +483,21 @@ def create_html_template(stats, graph1, graph2, graph3, graph4, graph5, graph6, 
             padding: 15px;
             background: #f8f9fa;
             border-radius: 10px;
+        }}
+        
+        .graph-explanation {{
+            margin-top: 15px;
+            padding: 15px;
+            background: #e8f4f8;
+            border-left: 4px solid #667eea;
+            border-radius: 5px;
+            color: #555;
+            font-size: 0.95em;
+            line-height: 1.8;
+        }}
+        
+        .graph-explanation strong {{
+            color: #667eea;
         }}
         
         .graph-grid {{
@@ -617,34 +631,83 @@ def create_html_template(stats, graph1, graph2, graph3, graph4, graph5, graph6, 
             
             <div class="graph-grid">
                 <div class="graph-container">
+                    <h3 style="color: #667eea; margin-bottom: 15px;">📊 Distribución de Sentimientos</h3>
                     {graph1}
+                    <div class="graph-explanation">
+                        <strong>Conclusión:</strong> El análisis muestra un ligero sesgo positivo con <strong>52.8% de noticias positivas</strong> versus 47.2% negativas, 
+                        con una diferencia de +231 noticias. Esto indica que durante el período 2000-2016, las noticias financieras tendieron a ser 
+                        moderadamente optimistas sobre el mercado de valores, aunque el balance es relativamente equilibrado, reflejando la volatilidad 
+                        natural del mercado financiero.
+                    </div>
                 </div>
                 
                 <div class="graph-container">
+                    <h3 style="color: #667eea; margin-bottom: 15px;">📅 Análisis por Día de la Semana</h3>
                     {graph3}
+                    <div class="graph-explanation">
+                        <strong>Conclusión:</strong> Se identifica claramente el <strong>"Efecto Lunes"</strong> con solo 49.5% de noticias positivas (la más baja), 
+                        mientras que el <strong>viernes presenta 55.5% de positividad</strong> (la más alta). Esta tendencia, conocida como "Monday Effect", 
+                        sugiere que las noticias tienden a ser más pesimistas al inicio de la semana y más optimistas hacia el final, posiblemente 
+                        relacionado con patrones de comportamiento del mercado y expectativas de fin de semana.
+                    </div>
                 </div>
             </div>
             
             <div class="graph-container">
+                <h3 style="color: #667eea; margin-bottom: 15px;">📈 Evolución Temporal del Sentimiento</h3>
                 {graph2}
+                <div class="graph-explanation">
+                    <strong>Conclusión:</strong> La serie temporal de 199 meses (2000-2016) revela que el volumen de noticias positivas 
+                    <strong>promedia 10.9 por mes versus 9.8 negativas</strong>, manteniendo consistencia con la distribución general. 
+                    Se observan picos de volatilidad especialmente en periodos de crisis (2008-2009) y recuperación. La tendencia mantiene 
+                    un balance relativamente estable a lo largo de los 17 años, sin grandes desviaciones sostenidas.
+                </div>
             </div>
             
             <div class="graph-grid">
                 <div class="graph-container">
+                    <h3 style="color: #667eea; margin-bottom: 15px;">📊 Distribución por Trimestre</h3>
                     {graph6}
+                    <div class="graph-explanation">
+                        <strong>Conclusión:</strong> El análisis trimestral muestra una distribución equilibrada con <strong>Q4 liderando con 54.1% de positividad</strong>, 
+                        seguido por Q2 (52.9%), Q3 (52.4%) y Q1 (51.8%). El cuarto trimestre históricamente muestra mayor optimismo, 
+                        posiblemente relacionado con efectos de fin de año, reportes corporativos y expectativas de bonos. Los otros 
+                        tres trimestres mantienen niveles similares entre sí.
+                    </div>
                 </div>
                 
                 <div class="graph-container">
+                    <h3 style="color: #667eea; margin-bottom: 15px;">🔗 Matriz de Correlación</h3>
                     {graph7}
+                    <div class="graph-explanation">
+                        <strong>Conclusión:</strong> Las correlaciones con el sentimiento son débiles pero reveladoras: <strong>day_of_week (+0.0336)</strong> 
+                        es la más fuerte, validando el efecto semanal observado. La correlación negativa con "day" (-0.0220) sugiere 
+                        leve tendencia a sentimientos más negativos en fechas más avanzadas del mes. Las correlaciones positivas bajas con 
+                        year (+0.0205) y month (+0.0158) indican estabilidad temporal del sentimiento.
+                    </div>
                 </div>
             </div>
             
             <div class="graph-container">
+                <h3 style="color: #667eea; margin-bottom: 15px;">🗓️ Heatmap Mensual por Año</h3>
                 {graph4}
+                <div class="graph-explanation">
+                    <strong>Conclusión:</strong> El mapa de calor revela <strong>julio 2016 como el mes más positivo</strong> (promedio 1.000 - 100% positivo) 
+                    y <strong>mayo 2012 como el más negativo</strong> (promedio 0.227 - solo 22.7% positivo), coincidiendo con la crisis europea. 
+                    Los patrones muestran "clusters" de pesimismo durante períodos de crisis (2008-2009, 2011-2012) y optimismo en 
+                    fases de crecimiento (2013-2016), validando que el sentimiento de las noticias refleja ciclos económicos reales.
+                </div>
             </div>
             
             <div class="graph-container">
+                <h3 style="color: #667eea; margin-bottom: 15px;">💬 Top 20 Palabras Más Frecuentes</h3>
                 {graph5}
+                <div class="graph-explanation">
+                    <strong>Conclusión:</strong> De 345,086 palabras analizadas (57,890 únicas), las más frecuentes son conectores ingleses 
+                    (with, that, from, have, after), indicando que el dataset proviene de fuentes anglosajonas. La alta diversidad léxica 
+                    (16.8% de palabras únicas) sugiere vocabulario técnico variado en noticias financieras. Este análisis es útil para 
+                    identificar temas recurrentes y contexto lingüístico del corpus analizado.
+                </div>
             </div>
         </div>
         
