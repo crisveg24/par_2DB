@@ -35,7 +35,7 @@ def print_header(title: str):
 
 
 
-def generate_html_report(df: pd.DataFrame):
+def generate_html_report(df: pd.DataFrame, output_dir: str = "."):
     """Genera un reporte HTML completo con todas las visualizaciones"""
     print_header("📊 FASE 4: ANÁLISIS - Generando Visualizaciones")
     
@@ -84,8 +84,8 @@ def generate_html_report(df: pd.DataFrame):
         conclusions
     )
     
-    # Guardar archivo
-    output_path = "reporte_analisis.html"
+    # Guardar archivo en el directorio del script
+    output_path = os.path.join(output_dir, "reporte_analisis.html")
     with open(output_path, 'w', encoding='utf-8') as f:
         f.write(html_content)
     
@@ -932,7 +932,11 @@ def main():
         # ========== FASE 1: EXTRACT ==========
         print_header("📂 FASE 1: EXTRACT - Extracción de Datos")
         
-        extractor = StockExtractor("stock_senti_analysis.csv")
+        # Construir ruta absoluta al CSV (siempre funciona sin importar desde dónde se ejecute)
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        csv_path = os.path.join(script_dir, "stock_senti_analysis.csv")
+        
+        extractor = StockExtractor(csv_path)
         raw_data = extractor.extract_data()
         
         print("\n📋 Vista previa de datos crudos:")
@@ -964,7 +968,11 @@ def main():
         # ========== FASE 3: LOAD ==========
         print_header("💾 FASE 3: LOAD - Carga de Datos")
         
-        loader = StockLoader(clean_data, output_dir="data")
+        # Crear directorio data relativo al script
+        data_dir = os.path.join(script_dir, "data")
+        os.makedirs(data_dir, exist_ok=True)
+        
+        loader = StockLoader(clean_data, output_dir=data_dir)
         loader.load_all(base_name="stock_senti_clean")
         
         # Reporte de carga
@@ -972,7 +980,7 @@ def main():
         print(f"\n✅ Cargas exitosas: {load_report['successful_loads']}/{load_report['total_attempts']}")
         
         # ========== FASE 4: ANÁLISIS Y VISUALIZACIÓN ==========
-        report_path = generate_html_report(clean_data)
+        report_path = generate_html_report(clean_data, output_dir=script_dir)
         
         # ========== RESUMEN FINAL ==========
         print_header("✨ PIPELINE ETL COMPLETADO EXITOSAMENTE")
