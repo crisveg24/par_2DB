@@ -17,7 +17,12 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from collections import Counter
+import http.server
+import socketserver
+import threading
+import socket
 import webbrowser
+import time
 
 # Agregar el directorio actual al path para imports
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -32,6 +37,106 @@ def print_header(title: str):
     print("\n" + "="*70)
     print(f"  {title}")
     print("="*70)
+
+
+def find_free_port(start_port=8000, max_port=8100):
+    """Encuentra un puerto disponible"""
+    for port in range(start_port, max_port):
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.bind(('', port))
+                return port
+        except OSError:
+            continue
+    return None
+
+
+def start_http_server(port=8000, directory="."):
+    """Inicia un servidor HTTP en un thread separado"""
+    os.chdir(directory)
+    
+    class QuietHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
+        def log_message(self, format, *args):
+            pass  # Suprimir logs del servidor
+    
+    handler = QuietHTTPRequestHandler
+    handler.extensions_map.update({
+        '.html': 'text/html',
+        '.css': 'text/css',
+        '.js': 'application/javascript',
+    })
+    
+    with socketserver.TCPServer(("", port), handler) as httpd:
+        httpd.serve_forever()
+
+
+def open_report_in_browser(report_path, script_dir):
+    """Abre el reporte en el navegador usando servidor HTTP"""
+    print_header("🌐 INICIANDO SERVIDOR WEB")
+    
+    # Encontrar puerto disponible
+    PORT = find_free_port()
+    if PORT is None:
+        print("❌ No se pudo encontrar un puerto disponible")
+        print(f"💡 Abre manualmente: {report_path}")
+        return
+    
+    # Detectar si estamos en Codespaces
+    is_codespaces = os.environ.get('CODESPACES') == 'true'
+    codespace_name = os.environ.get('CODESPACE_NAME', '')
+    
+    # Iniciar servidor en thread separado
+    server_thread = threading.Thread(
+        target=start_http_server, 
+        args=(PORT, script_dir),
+        daemon=True
+    )
+    server_thread.start()
+    
+    # Dar tiempo al servidor para iniciar
+    time.sleep(1)
+    
+    filename = os.path.basename(report_path)
+    
+    print(f"\n✅ Servidor HTTP iniciado en puerto {PORT}")
+    print(f"📁 Sirviendo archivos desde: {script_dir}")
+    
+    if is_codespaces and codespace_name:
+        # URL pública de Codespaces
+        url = f"https://{codespace_name}-{PORT}.app.github.dev/{filename}"
+        print(f"\n🔗 Abre esta URL en tu navegador:")
+        print(f"   {url}")
+        print(f"\n💡 VS Code debería mostrar una notificación de 'Port {PORT} is available'")
+        print(f"   Haz clic en 'Open in Browser' si aparece")
+        
+        # Intentar abrir en el navegador del sistema (funcionará si está en local)
+        try:
+            webbrowser.open(url)
+        except:
+            pass
+    else:
+        # Entorno local
+        url = f"http://localhost:{PORT}/{filename}"
+        print(f"\n🔗 Abriendo navegador automáticamente...")
+        print(f"   URL: {url}")
+        
+        try:
+            webbrowser.open(url)
+            print(f"✅ Navegador abierto")
+        except Exception as e:
+            print(f"⚠️  No se pudo abrir automáticamente: {e}")
+            print(f"💡 Abre manualmente: {url}")
+    
+    print(f"\n⚠️  IMPORTANTE: Mantén este terminal abierto mientras uses el reporte")
+    print(f"⚠️  Presiona Ctrl+C cuando termines para detener el servidor")
+    
+    # Mantener el programa corriendo
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        print(f"\n\n🛑 Servidor detenido")
+        print(f"👋 ¡Gracias por usar el pipeline ETL!")
 
 
 
@@ -90,16 +195,6 @@ def generate_html_report(df: pd.DataFrame, output_dir: str = "."):
         f.write(html_content)
     
     print(f"\n✅ Reporte HTML generado: {output_path}")
-    print(f"🌐 Abriendo reporte en el navegador...")
-    
-    # Abrir automáticamente en el navegador
-    try:
-        abs_path = os.path.abspath(output_path)
-        webbrowser.open('file://' + abs_path)
-        print(f"✓ Reporte abierto en el navegador predeterminado")
-    except Exception as e:
-        print(f"⚠ No se pudo abrir automáticamente: {e}")
-        print(f"💡 Abre manualmente el archivo: {output_path}")
     
     return output_path
 
@@ -1002,6 +1097,9 @@ def main():
         print("\n" + "="*70)
         print("💡 Abre 'reporte_analisis.html' en tu navegador para ver el análisis completo")
         print("="*70 + "\n")
+        
+        # Iniciar servidor HTTP y abrir navegador automáticamente
+        open_report_in_browser(report_path, script_dir)
         
         return 0
         

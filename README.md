@@ -101,13 +101,34 @@ pyarrow>=12.0.0        # Engine Parquet alternativo
 
 ## 💻 Uso del Proyecto
 
-### Paso 1: Ejecutar Pipeline ETL
+### Ejecutar Pipeline ETL
 
 ```bash
 python main.py
 ```
 
-**Este comando realiza:**
+**¡Eso es todo!** El script automáticamente:
+1. ✅ Ejecuta el pipeline ETL completo
+2. ✅ Genera todos los archivos (CSV, Parquet, SQLite, HTML)
+3. ✅ Inicia un servidor HTTP automáticamente
+4. ✅ Abre el reporte en tu navegador
+
+**En GitHub Codespaces:**
+- VS Code mostrará una notificación de "Port disponible"
+- Haz clic en "Open in Browser" 
+- O copia la URL que aparece en la terminal
+
+**Archivos generados:**
+- `data/stock_senti_clean.csv`
+- `data/stock_senti_clean.parquet`
+- `data/stock_senti_clean.db`
+- `reporte_analisis.html`
+
+⚠️ **Nota:** Mantén la terminal abierta mientras uses el reporte. Presiona `Ctrl+C` para detener el servidor.
+
+---
+
+### 💻 Qué Hace el Pipeline
 
 1. **Extract** 📂
    - Lee `stock_senti_analysis.csv` (dataset original)
@@ -248,3 +269,36 @@ open analysis_report.html
 - Lee archivos CSV con detección automática de encoding
 - Soporta múltiples codificaciones: UTF-8, Latin-1, ISO-8859-1, CP1252
 - Valida estructura de datos
+
+---
+
+## 📝 Resumen Rápido
+
+### Ejecutar en GitHub Codespaces o Local:
+
+```bash
+# ¡Solo ejecuta esto!
+python main.py
+```
+
+El script automáticamente:
+- ✅ Procesa todos los datos
+- ✅ Genera visualizaciones
+- ✅ Inicia servidor HTTP
+- ✅ Abre el reporte en tu navegador
+
+**En Codespaces:** Haz clic en "Open in Browser" cuando aparezca la notificación de puerto.
+
+**Detener el servidor:** Presiona `Ctrl+C` en la terminal.
+
+---
+
+## 👨‍💻 Autor
+
+**Cristian Vega**  
+GitHub: [@crisveg24](https://github.com/crisveg24)  
+Proyecto: [par_2DB](https://github.com/crisveg24/par_2DB)
+
+---
+
+**¡Disfruta del análisis! 📊🚀**
