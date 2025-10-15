@@ -43,11 +43,14 @@ env/
 Thumbs.db
 desktop.ini
 
-# Datos (opcional - descomentar si no quieres versionar los datos generados)
-# data/
-# *.csv
-# *.parquet
-# *.db
+# Datos generados automáticamente por el pipeline
+data/*.csv
+data/*.parquet
+data/*.db
+
+# Reportes HTML generados automáticamente
+reporte_analisis.html
+analysis_report.html
 
 # Logs
 *.log
