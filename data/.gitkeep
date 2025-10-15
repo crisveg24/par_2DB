@@ -1,0 +1,12 @@
+# Directorio de Datos Generados
+
+Este directorio contiene los datos procesados por el pipeline ETL.
+Los archivos se generan automáticamente al ejecutar `main.py`.
+
+## Archivos generados:
+
+- `stock_senti_clean.csv` - Datos limpios en formato CSV
+- `stock_senti_clean.parquet` - Datos limpios en formato Parquet (comprimido)
+- `stock_senti_clean.db` - Base de datos SQLite con los datos limpios
+
+**Nota:** Estos archivos NO están versionados en Git. Se generan localmente al ejecutar el pipeline.
